@@ -60,7 +60,7 @@ export const InputForm: React.FC<InputFormProps> = ({
           value={internalInputValue}
           onChange={(e) => setInternalInputValue(e.target.value)}
           onKeyDown={handleInternalKeyDown}
-          placeholder="Who won the Euro 2024 and scored the most goals?"
+          placeholder="Search case law, statutes, or legal topics (e.g., 'Fourth Amendment cell phone searches')"
           className={`w-full text-neutral-100 placeholder-neutral-500 resize-none border-0 focus:outline-none focus:ring-0 outline-none focus-visible:ring-0 shadow-none 
                         md:text-base  min-h-[56px] max-h-[200px]`}
           rows={1}
@@ -98,7 +98,7 @@ export const InputForm: React.FC<InputFormProps> = ({
           <div className="flex flex-row gap-2 bg-neutral-700 border-neutral-600 text-neutral-300 focus:ring-neutral-500 rounded-xl rounded-t-sm pl-2  max-w-[100%] sm:max-w-[90%]">
             <div className="flex flex-row items-center text-sm">
               <Brain className="h-4 w-4 mr-2" />
-              Effort
+              Research Depth
             </div>
             <Select value={effort} onValueChange={setEffort}>
               <SelectTrigger className="w-[120px] bg-transparent border-none cursor-pointer">
@@ -109,19 +109,19 @@ export const InputForm: React.FC<InputFormProps> = ({
                   value="low"
                   className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
                 >
-                  Low
+                  Basic
                 </SelectItem>
                 <SelectItem
                   value="medium"
                   className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
                 >
-                  Medium
+                  Comprehensive
                 </SelectItem>
                 <SelectItem
                   value="high"
                   className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
                 >
-                  High
+                  Deep Analysis
                 </SelectItem>
               </SelectContent>
             </Select>
