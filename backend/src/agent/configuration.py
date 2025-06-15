@@ -1,12 +1,19 @@
 import os
 from pydantic import BaseModel, Field
-from typing import Any, Optional
+from typing import Any, Optional, Literal
 
 from langchain_core.runnables import RunnableConfig
 
 
 class Configuration(BaseModel):
     """The configuration for the agent."""
+
+    llm_provider: Literal["gemini", "openai"] = Field(
+        default="gemini",
+        metadata={
+            "description": "The LLM provider to use ('gemini' or 'openai')."
+        },
+    )
 
     query_generator_model: str = Field(
         default="gemini-2.0-flash",
@@ -26,6 +33,20 @@ class Configuration(BaseModel):
         default="gemini-2.5-pro-preview-05-06",
         metadata={
             "description": "The name of the language model to use for the agent's answer."
+        },
+    )
+
+    openai_api_base: Optional[str] = Field(
+        default=None,
+        metadata={
+            "description": "The base URL for OpenAI-compatible API (e.g., https://api.openai.com/v1)."
+        },
+    )
+
+    openai_api_key: Optional[str] = Field(
+        default=None,
+        metadata={
+            "description": "The API key for OpenAI-compatible provider."
         },
     )
 
