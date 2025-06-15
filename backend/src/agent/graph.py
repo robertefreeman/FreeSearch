@@ -24,6 +24,7 @@ from agent.prompts import (
     answer_instructions,
 )
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from agent.utils import (
     get_citations,
     get_research_topic,
@@ -33,18 +34,62 @@ from agent.utils import (
 
 load_dotenv()
 
-if os.getenv("GEMINI_API_KEY") is None:
-    raise ValueError("GEMINI_API_KEY is not set")
+if os.getenv("GEMINI_API_KEY") is None and os.getenv("OPENAI_API_KEY") is None:
+    raise ValueError("Either GEMINI_API_KEY or OPENAI_API_KEY must be set")
 
-# Used for Google Search API
-genai_client = Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Used for Google Search API - still requires Gemini for search functionality
+genai_client = Client(api_key=os.getenv("GEMINI_API_KEY")) if os.getenv("GEMINI_API_KEY") else None
+
+
+def create_llm(model: str, temperature: float, max_retries: int, config: Configuration):
+    """Factory function to create LLM instances based on provider configuration.
+    
+    Args:
+        model: The model name to use
+        temperature: Temperature setting for the model
+        max_retries: Maximum number of retries for API calls
+        config: Configuration object containing provider settings
+        
+    Returns:
+        LLM instance (ChatGoogleGenerativeAI or ChatOpenAI)
+    """
+    if config.llm_provider == "openai":
+        # For OpenAI provider
+        api_key = config.openai_api_key or os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY must be set when using OpenAI provider")
+        
+        kwargs = {
+            "model": model,
+            "temperature": temperature,
+            "max_retries": max_retries,
+            "api_key": api_key,
+        }
+        
+        # Add base_url if provided
+        if config.openai_api_base:
+            kwargs["base_url"] = config.openai_api_base
+            
+        return ChatOpenAI(**kwargs)
+    else:
+        # Default to Gemini provider
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY must be set when using Gemini provider")
+        
+        return ChatGoogleGenerativeAI(
+            model=model,
+            temperature=temperature,
+            max_retries=max_retries,
+            api_key=api_key,
+        )
 
 
 # Nodes
 def generate_query(state: OverallState, config: RunnableConfig) -> QueryGenerationState:
     """LangGraph node that generates a search queries based on the User's question.
 
-    Uses Gemini 2.0 Flash to create an optimized search query for web research based on
+    Uses the configured LLM to create an optimized search query for web research based on
     the User's question.
 
     Args:
@@ -60,12 +105,12 @@ def generate_query(state: OverallState, config: RunnableConfig) -> QueryGenerati
     if state.get("initial_search_query_count") is None:
         state["initial_search_query_count"] = configurable.number_of_initial_queries
 
-    # init Gemini 2.0 Flash
-    llm = ChatGoogleGenerativeAI(
+    # Create LLM using factory function
+    llm = create_llm(
         model=configurable.query_generator_model,
         temperature=1.0,
         max_retries=2,
-        api_key=os.getenv("GEMINI_API_KEY"),
+        config=configurable
     )
     structured_llm = llm.with_structured_output(SearchQueryList)
 
@@ -163,11 +208,11 @@ def reflection(state: OverallState, config: RunnableConfig) -> ReflectionState:
         summaries="\n\n---\n\n".join(state["web_research_result"]),
     )
     # init Reasoning Model
-    llm = ChatGoogleGenerativeAI(
+    llm = create_llm(
         model=reasoning_model,
         temperature=1.0,
         max_retries=2,
-        api_key=os.getenv("GEMINI_API_KEY"),
+        config=configurable
     )
     result = llm.with_structured_output(Reflection).invoke(formatted_prompt)
 
@@ -231,7 +276,7 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
         Dictionary with state update, including running_summary key containing the formatted final summary with sources
     """
     configurable = Configuration.from_runnable_config(config)
-    reasoning_model = state.get("reasoning_model") or configurable.reasoning_model
+    answer_model = configurable.answer_model
 
     # Format the prompt
     current_date = get_current_date()
@@ -241,12 +286,12 @@ def finalize_answer(state: OverallState, config: RunnableConfig):
         summaries="\n---\n\n".join(state["web_research_result"]),
     )
 
-    # init Reasoning Model, default to Gemini 2.5 Flash
-    llm = ChatGoogleGenerativeAI(
-        model=reasoning_model,
+    # init Answer Model using factory function
+    llm = create_llm(
+        model=answer_model,
         temperature=0,
         max_retries=2,
-        api_key=os.getenv("GEMINI_API_KEY"),
+        config=configurable
     )
     result = llm.invoke(formatted_prompt)
 
