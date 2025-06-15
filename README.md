@@ -1,18 +1,20 @@
-# Gemini Fullstack LangGraph Quickstart
+# Deep Research Legal - AI-Powered Legal Research Tool
 
-This project demonstrates a fullstack application using a React frontend and a LangGraph-powered backend agent. The agent is designed to perform comprehensive research on a user's query by dynamically generating search terms, querying the web using Google Search, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported answer with citations. This application serves as an example of building research-augmented conversational AI using LangGraph and Google's Gemini models.
+This project demonstrates a specialized legal research application using a React frontend and a LangGraph-powered backend agent. The agent is designed to perform comprehensive legal research on legal queries by dynamically generating legal search terms, querying authoritative legal sources, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported legal analysis with proper citations. This application serves as a powerful tool for legal professionals, students, and researchers conducting thorough legal research using LangGraph and Google's Gemini models.
 
-![Gemini Fullstack LangGraph](./app.png)
+![Deep Research Legal](./app.png)
 
 ## Features
 
-- 💬 Fullstack application with a React frontend and LangGraph backend.
-- 🧠 Powered by a LangGraph agent for advanced research and conversational AI.
-- 🔍 Dynamic search query generation using Google Gemini models.
-- 🌐 Integrated web research via Google Search API.
-- 🤔 Reflective reasoning to identify knowledge gaps and refine searches.
-- 📄 Generates answers with citations from gathered sources.
+- ⚖️ Specialized legal research application with React frontend and LangGraph backend.
+- 🧠 Powered by a LangGraph agent for advanced legal research and analysis.
+- 🔍 Dynamic legal query generation using Google Gemini models with legal terminology.
+- 🌐 Integrated legal research via Google Search API targeting authoritative legal sources.
+- 🤔 Reflective reasoning to identify legal knowledge gaps and refine legal searches.
+- 📄 Generates comprehensive legal analysis with proper legal citations.
 - 🔄 Hot-reloading for both frontend and backend development during development.
+- ⚖️ Legal-specific interface with research depth options (Basic, Comprehensive, Deep Analysis).
+- 📚 Focuses on case law, statutes, regulations, and legal precedent research.
 
 ## Project Structure
 
@@ -61,17 +63,17 @@ This will run the backend and frontend development servers.    Open your browser
 
 _Alternatively, you can run the backend and frontend development servers separately. For the backend, open a terminal in the `backend/` directory and run `langgraph dev`. The backend API will be available at `http://127.0.0.1:2024`. It will also open a browser window to the LangGraph UI. For the frontend, open a terminal in the `frontend/` directory and run `npm run dev`. The frontend will be available at `http://localhost:5173`._
 
-## How the Backend Agent Works (High-Level)
+## How the Backend Legal Research Agent Works (High-Level)
 
-The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py`. It follows these steps:
+The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py` specialized for legal research. It follows these steps:
 
 ![Agent Flow](./agent.png)
 
-1.  **Generate Initial Queries:** Based on your input, it generates a set of initial search queries using a Gemini model.
-2.  **Web Research:** For each query, it uses the Gemini model with the Google Search API to find relevant web pages.
-3.  **Reflection & Knowledge Gap Analysis:** The agent analyzes the search results to determine if the information is sufficient or if there are knowledge gaps. It uses a Gemini model for this reflection process.
-4.  **Iterative Refinement:** If gaps are found or the information is insufficient, it generates follow-up queries and repeats the web research and reflection steps (up to a configured maximum number of loops).
-5.  **Finalize Answer:** Once the research is deemed sufficient, the agent synthesizes the gathered information into a coherent answer, including citations from the web sources, using a Gemini model.
+1.  **Generate Legal Research Queries:** Based on your legal question, it generates a set of targeted legal research queries using a Gemini model with legal-specific terminology and context.
+2.  **Legal Research:** For each query, it uses the Gemini model with the Google Search API to find relevant legal sources including case law, statutes, regulations, and legal commentary.
+3.  **Legal Analysis & Knowledge Gap Assessment:** The agent analyzes the legal research results to determine if the information is sufficient for comprehensive legal analysis or if there are knowledge gaps. It uses a Gemini model for this legal reflection process, focusing on missing precedents, jurisdictional variations, or conflicting authorities.
+4.  **Iterative Legal Research Refinement:** If gaps are found or the legal analysis is insufficient, it generates follow-up legal research queries targeting specific legal authorities, jurisdictions, or recent developments and repeats the research and reflection steps (up to a configured maximum number of loops).
+5.  **Finalize Legal Analysis:** Once the legal research is deemed sufficient, the agent synthesizes the gathered legal information into a comprehensive legal analysis with proper legal citations, including case law, statutory authority, and relevant legal commentary using a Gemini model.
 
 ## Deployment
 
@@ -97,11 +99,11 @@ Open your browser and navigate to `http://localhost:8123/app/` to see the applic
 
 ## Technologies Used
 
-- [React](https://reactjs.org/) (with [Vite](https://vitejs.dev/)) - For the frontend user interface.
+- [React](https://reactjs.org/) (with [Vite](https://vitejs.dev/)) - For the legal research frontend interface.
 - [Tailwind CSS](https://tailwindcss.com/) - For styling.
 - [Shadcn UI](https://ui.shadcn.com/) - For components.
-- [LangGraph](https://github.com/langchain-ai/langgraph) - For building the backend research agent.
-- [Google Gemini](https://ai.google.dev/models/gemini) - LLM for query generation, reflection, and answer synthesis.
+- [LangGraph](https://github.com/langchain-ai/langgraph) - For building the backend legal research agent.
+- [Google Gemini](https://ai.google.dev/models/gemini) - LLM for legal query generation, reflection, and legal analysis synthesis.
 
 ## License
 
