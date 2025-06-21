@@ -1,110 +1,144 @@
-# Deep Research Legal - AI-Powered Legal Research Tool
+# FreeSearch - AI-Powered Legal Research Tool
 
-This project demonstrates a specialized legal research application using a React frontend and a LangGraph-powered backend agent. The agent is designed to perform comprehensive legal research on legal queries by dynamically generating legal search terms, querying authoritative legal sources, reflecting on the results to identify knowledge gaps, and iteratively refining its search until it can provide a well-supported legal analysis with proper citations. This application serves as a powerful tool for legal professionals, students, and researchers conducting thorough legal research using LangGraph and Google's Gemini models.
+**Note:** This repository is named "FreeSearch" but contains a specialized legal research application called "Deep Research Legal".
 
-![Deep Research Legal](./app.png)
+This project is a comprehensive legal research application built with a React frontend and a LangGraph-powered backend agent. The agent performs sophisticated legal research by dynamically generating targeted legal search queries, gathering information from authoritative legal sources, analyzing results to identify knowledge gaps, and iteratively refining searches until it can provide well-supported legal analysis with proper citations. This application serves as a powerful tool for legal professionals, students, and researchers conducting thorough legal research using LangGraph and Google's Gemini models.
+
+![FreeSearch Legal Research Tool](./app.png)
 
 ## Features
 
-- ⚖️ Specialized legal research application with React frontend and LangGraph backend.
-- 🧠 Powered by a LangGraph agent for advanced legal research and analysis.
-- 🔍 Dynamic legal query generation using Google Gemini models with legal terminology.
-- 🌐 Integrated legal research via Google Search API targeting authoritative legal sources.
-- 🤔 Reflective reasoning to identify legal knowledge gaps and refine legal searches.
-- 📄 Generates comprehensive legal analysis with proper legal citations.
-- 🔄 Hot-reloading for both frontend and backend development during development.
-- ⚖️ Legal-specific interface with research depth options (Basic, Comprehensive, Deep Analysis).
-- 📚 Focuses on case law, statutes, regulations, and legal precedent research.
+- ⚖️ **Specialized Legal Research**: React frontend with LangGraph backend specifically designed for legal research and analysis
+- 🧠 **AI-Powered Research Agent**: LangGraph agent that conducts sophisticated legal research workflows
+- 🔍 **Intelligent Query Generation**: Dynamic legal query generation using Google Gemini models with legal terminology
+- 🌐 **Authoritative Source Integration**: Legal research via Google Search API targeting case law, statutes, regulations, and legal databases
+- 🤔 **Knowledge Gap Analysis**: Reflective reasoning to identify missing legal information and refine searches
+- 📄 **Comprehensive Legal Analysis**: Generates detailed legal analysis with proper citations and precedent references
+- 🔄 **Development Hot-Reloading**: Live reload for both frontend and backend during development
+- ⚖️ **Legal-Focused Interface**: Specialized UI with research depth options (Basic, Comprehensive, Deep Analysis)
+- 📚 **Multi-Source Research**: Covers case law, statutes, regulations, legal precedent, and secondary sources
 
 ## Project Structure
 
-The project is divided into two main directories:
+The project consists of two main components:
 
--   `frontend/`: Contains the React application built with Vite.
--   `backend/`: Contains the LangGraph/FastAPI application, including the research agent logic.
+- **`frontend/`**: React application built with Vite, TypeScript, and Tailwind CSS
+  - Modern React 19 with TypeScript
+  - Shadcn UI components for consistent design
+  - LangGraph SDK integration for real-time streaming
+  - Responsive design optimized for legal research workflows
+
+- **`backend/`**: LangGraph/FastAPI application with specialized legal research agent
+  - Python-based LangGraph agent for legal research workflows
+  - Google Gemini integration for AI-powered analysis
+  - Google Search API integration for legal source gathering
+  - FastAPI server with streaming capabilities
 
 ## Getting Started: Development and Local Testing
 
 Follow these steps to get the application running locally for development and testing.
 
-**1. Prerequisites:**
+**Prerequisites:**
 
--   Node.js and npm (or yarn/pnpm)
--   Python 3.8+
--   **`GEMINI_API_KEY`**: The backend agent requires a Google Gemini API key.
-    1.  Navigate to the `backend/` directory.
-    2.  Create a file named `.env` by copying the `backend/.env.example` file.
-    3.  Open the `.env` file and add your Gemini API key: `GEMINI_API_KEY="YOUR_ACTUAL_API_KEY"`
+- Node.js 18+ and npm (or yarn/pnpm)
+- Python 3.11+
+- **Google Gemini API Key**: Required for the backend AI agent
+  1. Navigate to the `backend/` directory
+  2. Copy `backend/.env.example` to `backend/.env`
+  3. Add your Gemini API key: `GEMINI_API_KEY="YOUR_ACTUAL_API_KEY"`
+- **Optional**: Google Search API credentials for enhanced web research capabilities
 
-**2. Install Dependencies:**
+**Install Dependencies:**
 
-**Backend:**
-
+**Backend Dependencies:**
 ```bash
 cd backend
 pip install .
 ```
 
-**Frontend:**
-
+**Frontend Dependencies:**
 ```bash
 cd frontend
 npm install
 ```
 
-**3. Run Development Servers:**
+**Run Development Servers:**
 
-**Backend & Frontend:**
-
+**Start Both Frontend and Backend:**
 ```bash
 make dev
 ```
-This will run the backend and frontend development servers.    Open your browser and navigate to the frontend development server URL (e.g., `http://localhost:5173/app`).
+This command starts both servers concurrently. Access the application at `http://localhost:5173/app`.
 
-_Alternatively, you can run the backend and frontend development servers separately. For the backend, open a terminal in the `backend/` directory and run `langgraph dev`. The backend API will be available at `http://127.0.0.1:2024`. It will also open a browser window to the LangGraph UI. For the frontend, open a terminal in the `frontend/` directory and run `npm run dev`. The frontend will be available at `http://localhost:5173`._
+**Run Servers Separately (Alternative):**
+- **Backend**: `cd backend && langgraph dev` (available at `http://127.0.0.1:2024`)
+- **Frontend**: `cd frontend && npm run dev` (available at `http://localhost:5173`)
 
-## How the Backend Legal Research Agent Works (High-Level)
+The backend also provides access to the LangGraph UI for debugging and monitoring agent workflows.
 
-The core of the backend is a LangGraph agent defined in `backend/src/agent/graph.py` specialized for legal research. It follows these steps:
+## How the Legal Research Agent Works
 
-![Agent Flow](./agent.png)
+The backend features a sophisticated LangGraph agent (defined in `backend/src/agent/graph.py`) that specializes in legal research workflows:
 
-1.  **Generate Legal Research Queries:** Based on your legal question, it generates a set of targeted legal research queries using a Gemini model with legal-specific terminology and context.
-2.  **Legal Research:** For each query, it uses the Gemini model with the Google Search API to find relevant legal sources including case law, statutes, regulations, and legal commentary.
-3.  **Legal Analysis & Knowledge Gap Assessment:** The agent analyzes the legal research results to determine if the information is sufficient for comprehensive legal analysis or if there are knowledge gaps. It uses a Gemini model for this legal reflection process, focusing on missing precedents, jurisdictional variations, or conflicting authorities.
-4.  **Iterative Legal Research Refinement:** If gaps are found or the legal analysis is insufficient, it generates follow-up legal research queries targeting specific legal authorities, jurisdictions, or recent developments and repeats the research and reflection steps (up to a configured maximum number of loops).
-5.  **Finalize Legal Analysis:** Once the legal research is deemed sufficient, the agent synthesizes the gathered legal information into a comprehensive legal analysis with proper legal citations, including case law, statutory authority, and relevant legal commentary using a Gemini model.
+![Legal Research Agent Workflow](./agent.png)
 
-## Deployment
+**Research Workflow:**
 
-In production, the backend server serves the optimized static frontend build. LangGraph requires a Redis instance and a Postgres database. Redis is used as a pub-sub broker to enable streaming real time output from background runs. Postgres is used to store assistants, threads, runs, persist thread state and long term memory, and to manage the state of the background task queue with 'exactly once' semantics. For more details on how to deploy the backend server, take a look at the [LangGraph Documentation](https://langchain-ai.github.io/langgraph/concepts/deployment_options/). Below is an example of how to build a Docker image that includes the optimized frontend build and the backend server and run it via `docker-compose`.
+1. **Legal Query Generation**: Analyzes your legal question and generates targeted search queries using Google Gemini with legal-specific terminology and context
+2. **Authoritative Source Research**: Executes searches using Google Search API, focusing on case law, statutes, regulations, and legal commentary from authoritative sources
+3. **Legal Analysis & Knowledge Assessment**: Evaluates research results for completeness, identifying gaps in legal precedent, jurisdictional variations, or conflicting authorities
+4. **Iterative Research Refinement**: Generates follow-up queries to address knowledge gaps, targeting specific legal authorities, jurisdictions, or recent developments (configurable loop limit)
+5. **Comprehensive Legal Analysis**: Synthesizes gathered information into detailed legal analysis with proper citations, case references, and statutory authority
 
-_Note: For the docker-compose.yml example you need a LangSmith API key, you can get one from [LangSmith](https://smith.langchain.com/settings)._
+## Production Deployment
 
-_Note: If you are not running the docker-compose.yml example or exposing the backend server to the public internet, you update the `apiUrl` in the `frontend/src/App.tsx` file your host. Currently the `apiUrl` is set to `http://localhost:8123` for docker-compose or `http://localhost:2024` for development._
+The application is designed for production deployment with Docker. The backend requires Redis (for pub-sub messaging and real-time streaming) and PostgreSQL (for data persistence, thread management, and task queue with exactly-once semantics).
 
-**1. Build the Docker Image:**
+**Requirements:**
+- Docker and Docker Compose
+- Google Gemini API Key
+- LangSmith API Key (optional, for monitoring and debugging)
 
-   Run the following command from the **project root directory**:
+**Build and Deploy:**
+
+1. **Build Docker Image:**
    ```bash
-   docker build -t gemini-fullstack-langgraph -f Dockerfile .
+   docker build -t freesearch-legal -f Dockerfile .
    ```
-**2. Run the Production Server:**
 
+2. **Run with Docker Compose:**
    ```bash
    GEMINI_API_KEY=<your_gemini_api_key> LANGSMITH_API_KEY=<your_langsmith_api_key> docker-compose up
    ```
 
-Open your browser and navigate to `http://localhost:8123/app/` to see the application. The API will be available at `http://localhost:8123`.
+**Access the Application:**
+- Frontend: `http://localhost:8123/app/`
+- API: `http://localhost:8123`
+
+**Configuration Notes:**
+- For custom deployments, update the `apiUrl` in `frontend/src/App.tsx`
+- Default URLs: `http://localhost:8123` (production) or `http://localhost:2024` (development)
+- See [LangGraph Documentation](https://langchain-ai.github.io/langgraph/concepts/deployment_options/) for advanced deployment options
 
 ## Technologies Used
 
-- [React](https://reactjs.org/) (with [Vite](https://vitejs.dev/)) - For the legal research frontend interface.
-- [Tailwind CSS](https://tailwindcss.com/) - For styling.
-- [Shadcn UI](https://ui.shadcn.com/) - For components.
-- [LangGraph](https://github.com/langchain-ai/langgraph) - For building the backend legal research agent.
-- [Google Gemini](https://ai.google.dev/models/gemini) - LLM for legal query generation, reflection, and legal analysis synthesis.
+**Frontend:**
+- [React 19](https://reactjs.org/) with [TypeScript](https://www.typescriptlang.org/) - Modern React application with type safety
+- [Vite](https://vitejs.dev/) - Fast build tool and development server  
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Shadcn UI](https://ui.shadcn.com/) - Reusable component library
+- [LangGraph SDK](https://github.com/langchain-ai/langgraph) - Real-time streaming integration
+
+**Backend:**
+- [LangGraph](https://github.com/langchain-ai/langgraph) - Agent workflow orchestration and management
+- [Google Gemini](https://ai.google.dev/models/gemini) - Large language model for legal analysis and query generation
+- [FastAPI](https://fastapi.tiangolo.com/) - High-performance Python web framework
+- [Google Search API](https://developers.google.com/custom-search/v1/overview) - Web search integration for legal sources
+- [Redis](https://redis.io/) - Pub-sub messaging and caching (production)
+- [PostgreSQL](https://www.postgresql.org/) - Data persistence and state management (production)
 
 ## License
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details. 
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+**Note**: The backend component (`backend/`) contains an MIT license from its original development. The overall project follows the Apache License 2.0. 
