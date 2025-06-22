@@ -2,7 +2,7 @@
 
 **Note:** This repository is named "FreeSearch" but contains a specialized legal research application called "Deep Research Legal".
 
-This project is a comprehensive legal research application built with a React frontend and a LangGraph-powered backend agent. The agent performs sophisticated legal research by dynamically generating targeted legal search queries, gathering information from authoritative legal sources, analyzing results to identify knowledge gaps, and iteratively refining searches until it can provide well-supported legal analysis with proper citations. This application serves as a powerful tool for legal professionals, students, and researchers conducting thorough legal research using LangGraph and Google's Gemini models.
+This project is a comprehensive legal research application built with a React frontend and a LangGraph-powered backend agent. The agent performs sophisticated legal research by dynamically generating targeted legal search queries, gathering information from authoritative legal sources, analyzing results to identify knowledge gaps, and iteratively refining searches until it can provide well-supported legal analysis with proper citations. This flexible, multi-provider application supports both Google Gemini and OpenAI-compatible endpoints, serving as a powerful tool for legal professionals, students, and researchers conducting thorough legal research.
 
 ![FreeSearch Legal Research Tool](./app.png)
 
@@ -10,8 +10,9 @@ This project is a comprehensive legal research application built with a React fr
 
 - ⚖️ **Specialized Legal Research**: React frontend with LangGraph backend specifically designed for legal research and analysis
 - 🧠 **AI-Powered Research Agent**: LangGraph agent that conducts sophisticated legal research workflows
-- 🔍 **Intelligent Query Generation**: Dynamic legal query generation using Google Gemini models with legal terminology
-- 🌐 **Authoritative Source Integration**: Legal research via Google Search API targeting case law, statutes, regulations, and legal databases
+- 🔀 **Multi-Provider LLM Support**: Flexible provider switching between Google Gemini and OpenAI-compatible endpoints (OpenAI, Ollama, Together AI, etc.)
+- 🔍 **Intelligent Query Generation**: Dynamic legal query generation with configurable LLM providers and legal terminology
+- 🌐 **Enhanced Search Integration**: Advanced legal research via Google's native Search API with grounding metadata and improved citation system
 - 🤔 **Knowledge Gap Analysis**: Reflective reasoning to identify missing legal information and refine searches
 - 📄 **Comprehensive Legal Analysis**: Generates detailed legal analysis with proper citations and precedent references
 - 🔄 **Development Hot-Reloading**: Live reload for both frontend and backend during development
@@ -30,9 +31,10 @@ The project consists of two main components:
 
 - **`backend/`**: LangGraph/FastAPI application with specialized legal research agent
   - Python-based LangGraph agent for legal research workflows
-  - Google Gemini integration for AI-powered analysis
-  - Google Search API integration for legal source gathering
+  - Multi-provider LLM support (Google Gemini and OpenAI-compatible)
+  - Enhanced Google Search API integration with grounding metadata
   - FastAPI server with streaming capabilities
+  - Provider testing infrastructure
 
 ## Getting Started: Development and Local Testing
 
@@ -42,10 +44,13 @@ Follow these steps to get the application running locally for development and te
 
 - Node.js 18+ and npm (or yarn/pnpm)
 - Python 3.11+
-- **Google Gemini API Key**: Required for the backend AI agent
+- **LLM Provider API Key**: Choose one of the following:
+  - **Google Gemini** (default): Set `GEMINI_API_KEY="YOUR_ACTUAL_API_KEY"`
+  - **OpenAI or Compatible**: Set `LLM_PROVIDER=openai` and `OPENAI_API_KEY="YOUR_ACTUAL_API_KEY"`
+    - For custom endpoints (Ollama, Together AI, etc.): Also set `OPENAI_API_BASE="YOUR_ENDPOINT_URL"`
   1. Navigate to the `backend/` directory
   2. Copy `backend/.env.example` to `backend/.env`
-  3. Add your Gemini API key: `GEMINI_API_KEY="YOUR_ACTUAL_API_KEY"`
+  3. Configure your preferred LLM provider (see Environment Configuration section below)
 - **Optional**: Google Search API credentials for enhanced web research capabilities
 
 **Install Dependencies:**
@@ -76,6 +81,35 @@ This command starts both servers concurrently. Access the application at `http:/
 
 The backend also provides access to the LangGraph UI for debugging and monitoring agent workflows.
 
+**Environment Configuration:**
+
+Configure your preferred LLM provider by editing `backend/.env`:
+
+**For Google Gemini (default):**
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+**For OpenAI:**
+```bash
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_BASE=https://api.openai.com/v1
+QUERY_GENERATOR_MODEL=gpt-4o-mini
+REFLECTION_MODEL=gpt-4o
+ANSWER_MODEL=gpt-4o
+```
+
+**For OpenAI-Compatible Providers (Ollama, Together AI, etc.):**
+```bash
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_api_key_here
+OPENAI_API_BASE=http://localhost:11434/v1  # Example for Ollama
+QUERY_GENERATOR_MODEL=llama3.2
+REFLECTION_MODEL=llama3.2
+ANSWER_MODEL=llama3.2
+```
+
 ## How the Legal Research Agent Works
 
 The backend features a sophisticated LangGraph agent (defined in `backend/src/agent/graph.py`) that specializes in legal research workflows:
@@ -96,7 +130,7 @@ The application is designed for production deployment with Docker. The backend r
 
 **Requirements:**
 - Docker and Docker Compose
-- Google Gemini API Key
+- LLM Provider API Key (Google Gemini or OpenAI-compatible)
 - LangSmith API Key (optional, for monitoring and debugging)
 
 **Build and Deploy:**
@@ -107,8 +141,55 @@ The application is designed for production deployment with Docker. The backend r
    ```
 
 2. **Run with Docker Compose:**
+
+   **Option 1: Google Gemini (Default):**
    ```bash
    GEMINI_API_KEY=<your_gemini_api_key> LANGSMITH_API_KEY=<your_langsmith_api_key> docker-compose up
+   ```
+
+   **Option 2: OpenAI:**
+   ```bash
+   LLM_PROVIDER=openai \
+   OPENAI_API_KEY=<your_openai_api_key> \
+   OPENAI_API_BASE=https://api.openai.com/v1 \
+   QUERY_GENERATOR_MODEL=gpt-4o-mini \
+   REFLECTION_MODEL=gpt-4o \
+   ANSWER_MODEL=gpt-4o \
+   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   docker-compose up
+   ```
+
+   **Option 3: Ollama (Local OpenAI-Compatible):**
+   ```bash
+   LLM_PROVIDER=openai \
+   OPENAI_API_KEY=your_key_here \
+   OPENAI_API_BASE=http://host.docker.internal:11434/v1 \
+   QUERY_GENERATOR_MODEL=llama3.2 \
+   REFLECTION_MODEL=llama3.2 \
+   ANSWER_MODEL=llama3.2 \
+   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   docker-compose up
+   ```
+
+   **Option 4: Together AI:**
+   ```bash
+   LLM_PROVIDER=openai \
+   OPENAI_API_KEY=<your_together_api_key> \
+   OPENAI_API_BASE=https://api.together.xyz/v1 \
+   QUERY_GENERATOR_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
+   REFLECTION_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
+   ANSWER_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
+   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   docker-compose up
+   ```
+
+   **Option 5: Using Environment File:**
+   Create a `.env` file in the project root with your configuration:
+   ```bash
+   # Copy backend/.env.example to .env and configure your preferred provider
+   cp backend/.env.example .env
+   # Edit .env with your configuration
+   docker-compose up
    ```
 
 **Access the Application:**
@@ -116,9 +197,42 @@ The application is designed for production deployment with Docker. The backend r
 - API: `http://localhost:8123`
 
 **Configuration Notes:**
-- For custom deployments, update the `apiUrl` in `frontend/src/App.tsx`
+- For custom deployments, update the `apiUrl` in [`frontend/src/App.tsx`](frontend/src/App.tsx)
 - Default URLs: `http://localhost:8123` (production) or `http://localhost:2024` (development)
+- When using Ollama with Docker, use `host.docker.internal` instead of `localhost` to access the host machine
+- For other OpenAI-compatible providers, adjust the `OPENAI_API_BASE` URL accordingly
+- All configuration options are documented in [`backend/.env.example`](backend/.env.example)
 - See [LangGraph Documentation](https://langchain-ai.github.io/langgraph/concepts/deployment_options/) for advanced deployment options
+
+## Provider Testing
+
+The application includes a comprehensive testing script to verify LLM provider configurations. Use [`backend/test_llm_providers.py`](backend/test_llm_providers.py) to test different provider setups:
+
+**Test Gemini Provider:**
+```bash
+cd backend
+GEMINI_API_KEY=your_key python test_llm_providers.py
+```
+
+**Test OpenAI Provider:**
+```bash
+cd backend
+LLM_PROVIDER=openai OPENAI_API_KEY=your_key python test_llm_providers.py
+```
+
+**Test OpenAI-Compatible Provider (e.g., Ollama):**
+```bash
+cd backend
+LLM_PROVIDER=openai OPENAI_API_KEY=your_key OPENAI_API_BASE=http://localhost:11434/v1 python test_llm_providers.py
+```
+
+The test script validates:
+- Provider configuration and authentication
+- Model instantiation and basic functionality
+- Factory function [`create_llm()`](backend/src/agent/graph.py#L44-L85) operation
+- Configuration parameter handling
+
+This ensures your chosen LLM provider is properly configured before running the full application.
 
 ## Technologies Used
 
@@ -131,9 +245,12 @@ The application is designed for production deployment with Docker. The backend r
 
 **Backend:**
 - [LangGraph](https://github.com/langchain-ai/langgraph) - Agent workflow orchestration and management
-- [Google Gemini](https://ai.google.dev/models/gemini) - Large language model for legal analysis and query generation
+- **Multi-Provider LLM Support**:
+  - [Google Gemini](https://ai.google.dev/models/gemini) - Advanced language models for legal analysis
+  - [OpenAI](https://openai.com/api/) - GPT models and OpenAI-compatible endpoints
+  - [LangChain OpenAI](https://python.langchain.com/docs/integrations/llms/openai) - OpenAI integration with support for custom endpoints
 - [FastAPI](https://fastapi.tiangolo.com/) - High-performance Python web framework
-- [Google Search API](https://developers.google.com/custom-search/v1/overview) - Web search integration for legal sources
+- [Google Search API](https://developers.google.com/custom-search/v1/overview) - Enhanced web search with grounding metadata and advanced citations
 - [Redis](https://redis.io/) - Pub-sub messaging and caching (production)
 - [PostgreSQL](https://www.postgresql.org/) - Data persistence and state management (production)
 
