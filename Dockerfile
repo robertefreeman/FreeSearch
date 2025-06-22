@@ -7,8 +7,12 @@ WORKDIR /app/frontend
 # Copy frontend package files and install dependencies
 COPY frontend/package.json ./
 COPY frontend/package-lock.json ./
+# Configure npm to handle certificate issues in Docker environment
+RUN npm config set strict-ssl false
+# Install TypeScript globally to ensure it's available
+RUN npm install -g typescript
 # If you use yarn or pnpm, adjust accordingly (e.g., copy yarn.lock or pnpm-lock.yaml and use yarn install or pnpm install)
-RUN npm ci
+RUN npm ci --production=false
 
 # Copy the rest of the frontend source code
 COPY frontend/ ./
