@@ -26,7 +26,7 @@ services:
       retries: 5
       interval: 5s
   langgraph-api:
-    image: gemini-fullstack-langgraph
+    image: ghcr.io/robert/freesearch:latest
     ports:
       - "8123:8000"
     depends_on:
@@ -35,7 +35,28 @@ services:
       langgraph-postgres:
         condition: service_healthy
     environment:
+      # LLM Provider Configuration
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      
+      # Google Gemini Configuration
       GEMINI_API_KEY: ${GEMINI_API_KEY}
+      
+      # OpenAI Configuration
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_API_BASE: ${OPENAI_API_BASE}
+      
+      # Model Configuration
+      QUERY_GENERATOR_MODEL: ${QUERY_GENERATOR_MODEL}
+      REFLECTION_MODEL: ${REFLECTION_MODEL}
+      ANSWER_MODEL: ${ANSWER_MODEL}
+      
+      # Research Configuration
+      NUMBER_OF_INITIAL_QUERIES: ${NUMBER_OF_INITIAL_QUERIES}
+      MAX_RESEARCH_LOOPS: ${MAX_RESEARCH_LOOPS}
+      
+      # LangSmith Configuration
       LANGSMITH_API_KEY: ${LANGSMITH_API_KEY}
+      
+      # Database Configuration
       REDIS_URI: redis://langgraph-redis:6379
       POSTGRES_URI: postgres://postgres:postgres@langgraph-postgres:5432/postgres?sslmode=disable

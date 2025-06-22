@@ -135,12 +135,17 @@ The application is designed for production deployment with Docker. The backend r
 
 **Build and Deploy:**
 
-1. **Build Docker Image:**
+1. **Pull Docker Image from GitHub Container Registry:**
    ```bash
-   docker build -t freesearch-legal -f Dockerfile .
+   docker pull ghcr.io/robert/freesearch:latest
    ```
 
-2. **Run with Docker Compose:**
+2. **Build Docker Image (Alternative):**
+   ```bash
+   docker build -t ghcr.io/robert/freesearch:latest -f Dockerfile .
+   ```
+
+3. **Run with Docker Compose:**
 
    **Option 1: Google Gemini (Default):**
    ```bash
@@ -197,6 +202,9 @@ The application is designed for production deployment with Docker. The backend r
 - API: `http://localhost:8123`
 
 **Configuration Notes:**
+- The Docker Compose configuration uses the GitHub Container Registry image: `ghcr.io/robert/freesearch:latest`
+- The image is automatically built and pushed by GitHub Actions on every commit to the main branch
+- Multi-provider environment variable support is included - all variables from [`backend/.env.example`](backend/.env.example) are available
 - For custom deployments, update the `apiUrl` in [`frontend/src/App.tsx`](frontend/src/App.tsx)
 - Default URLs: `http://localhost:8123` (production) or `http://localhost:2024` (development)
 - When using Ollama with Docker, use `host.docker.internal` instead of `localhost` to access the host machine
