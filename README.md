@@ -154,47 +154,56 @@ The application is designed for production deployment with Docker. The backend r
 
    **Option 2: OpenAI:**
    ```bash
-   LLM_PROVIDER=openai \
-   OPENAI_API_KEY=<your_openai_api_key> \
-   OPENAI_API_BASE=https://api.openai.com/v1 \
-   QUERY_GENERATOR_MODEL=gpt-4o-mini \
-   REFLECTION_MODEL=gpt-4o \
-   ANSWER_MODEL=gpt-4o \
-   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   # Set environment variables and run
+   export LLM_PROVIDER=openai
+   export OPENAI_API_KEY=<your_openai_api_key>
+   export OPENAI_API_BASE=https://api.openai.com/v1
+   export QUERY_GENERATOR_MODEL=gpt-4o-mini
+   export REFLECTION_MODEL=gpt-4o
+   export ANSWER_MODEL=gpt-4o
+   export LANGSMITH_API_KEY=<your_langsmith_api_key>
    docker-compose up
    ```
 
    **Option 3: Ollama (Local OpenAI-Compatible):**
    ```bash
-   LLM_PROVIDER=openai \
-   OPENAI_API_KEY=your_key_here \
-   OPENAI_API_BASE=http://host.docker.internal:11434/v1 \
-   QUERY_GENERATOR_MODEL=llama3.2 \
-   REFLECTION_MODEL=llama3.2 \
-   ANSWER_MODEL=llama3.2 \
-   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   # Set environment variables and run
+   export LLM_PROVIDER=openai
+   export OPENAI_API_KEY=your_key_here
+   export OPENAI_API_BASE=http://host.docker.internal:11434/v1
+   export QUERY_GENERATOR_MODEL=llama3.2
+   export REFLECTION_MODEL=llama3.2
+   export ANSWER_MODEL=llama3.2
+   export LANGSMITH_API_KEY=<your_langsmith_api_key>
    docker-compose up
    ```
 
    **Option 4: Together AI:**
    ```bash
-   LLM_PROVIDER=openai \
-   OPENAI_API_KEY=<your_together_api_key> \
-   OPENAI_API_BASE=https://api.together.xyz/v1 \
-   QUERY_GENERATOR_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
-   REFLECTION_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
-   ANSWER_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo \
-   LANGSMITH_API_KEY=<your_langsmith_api_key> \
+   # Set environment variables and run
+   export LLM_PROVIDER=openai
+   export OPENAI_API_KEY=<your_together_api_key>
+   export OPENAI_API_BASE=https://api.together.xyz/v1
+   export QUERY_GENERATOR_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo
+   export REFLECTION_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo
+   export ANSWER_MODEL=meta-llama/Llama-3.2-3B-Instruct-Turbo
+   export LANGSMITH_API_KEY=<your_langsmith_api_key>
    docker-compose up
    ```
 
-   **Option 5: Using Environment File:**
+   **Option 5: Using Environment File (Recommended):**
    Create a `.env` file in the project root with your configuration:
    ```bash
    # Copy backend/.env.example to .env and configure your preferred provider
    cp backend/.env.example .env
-   # Edit .env with your configuration
+   # Edit .env with your configuration, then run:
    docker-compose up
+   ```
+
+   **Option 6: Using --env-file Flag:**
+   ```bash
+   # Use a custom environment file
+   docker-compose --env-file backend/.env up
    ```
 
 **Access the Application:**
